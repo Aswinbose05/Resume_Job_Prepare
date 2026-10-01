@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Resume Analyzer & Job Preparation System (CrewAI)</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232563EB'><path d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/><polyline points='14 2 14 8 20 8'/><line x1='16' y1='13' x2='8' y2='13'/><line x1='16' y1='17' x2='8' y2='17'/><polyline points='10 9 9 9 8 9'/></svg>">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a'
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Custom Styling -->
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen font-sans antialiased transition-colors duration-200">
+
+  <!-- TOP HEADER -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-white/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo & Title -->
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <div class="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center font-extrabold text-lg shadow-md shadow-brand-500/20">
+          <i data-lucide="cpu" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h1 class="font-extrabold text-lg tracking-tight text-slate-900 dark:text-white font-sans flex items-center space-x-2">
+            <span>AI Resume Analyzer & Job Preparation System</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 border border-brand-200 dark:border-brand-500/30">CrewAI</span>
+          </h1>
+          <p class="text-[10px] text-slate-500 tracking-wider uppercase font-mono">Multi-Agent Resume Analysis • ATS Scoring • Interview Prep</p>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleDarkMode()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-700 hover:border-slate-400" title="Toggle Light / Dark Mode">
+          <i data-lucide="sun" id="themeIcon" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Results Tab Bar (Shown once analyzed) -->
+    <div id="topNavTabs" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 border-t border-slate-200 dark:border-slate-800 overflow-x-auto flex items-center space-x-2 text-xs whitespace-nowrap bg-white/80 dark:bg-slate-900/80">
+      <button onclick="switchTab('dashboard')" class="tab-btn active px-3.5 py-1.5 rounded-lg font-bold transition-all flex items-center space-x-1.5" data-tab="dashboard">
+        <i data-lucide="bar-chart-3" class="w-3.5 h-3.5 text-brand-600"></i>
+        <span>ATS Score & Dashboard</span>
+      </button>
+      <button onclick="switchTab('skills')" class="tab-btn px-3.5 py-1.5 rounded-lg font-medium transition-all flex items-center space-x-1.5" data-tab="skills">
+        <i data-lucide="target" class="w-3.5 h-3.5 text-emerald-500"></i>
+        <span>Skills & Gap Analysis</span>
+      </button>
+      <button onclick="switchTab('optimizer')" class="tab-btn px-3.5 py-1.5 rounded-lg font-medium transition-all flex items-center space-x-1.5" data-tab="optimizer">
+        <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-500"></i>
+        <span>STAR Resume Tailoring</span>
+      </button>
+      <button onclick="switchTab('interview')" class="tab-btn px-3.5 py-1.5 rounded-lg font-medium transition-all flex items-center space-x-1.5" data-tab="interview">
+        <i data-lucide="message-square" class="w-3.5 h-3.5 text-purple-500"></i>
+        <span>Interview Questions & Mock</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+    <!-- UPLOAD & ANALYSIS SECTION -->
+    <section id="landingSection" class="space-y-6">
+
+      <!-- Header Hero Banner -->
+      <div class="bg-gradient-to-br from-brand-50 to-indigo-50/50 dark:from-slate-900 dark:to-slate-800/80 border border-brand-100 dark:border-slate-800 rounded-3xl p-6 sm:p-10 shadow-sm">
+        <div class="max-w-3xl space-y-3">
+          <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-700 dark:text-brand-300 text-xs font-mono font-semibold">
+            <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+            <span>CrewAI Multi-Agent System</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            Analyze Resume & Prepare for Target Job Roles
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            Upload any resume (PDF, DOCX, TXT, MD) and paste target job requirements. Our CrewAI agents perform deterministic ATS scoring, skill gap extraction, STAR bullet point enhancements, and role-specific interview preparation.
+          </p>
+        </div>
+      </div>
+
+      <!-- 2-Column Input Card -->
+      <div id="analyzeCard" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm">
+        <form id="analyzeForm" onsubmit="handleAnalyzeSubmit(event)">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            
+            <!-- Column 1: Upload Resume -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2 flex items-center justify-between">
+                <span>1. Upload Candidate Resume</span>
+                <span class="text-[11px] font-mono text-brand-600 dark:text-brand-400 font-semibold">PDF, DOCX, MD, TXT</span>
+              </label>
+              <div id="dropZone" class="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-brand-500 bg-slate-50 dark:bg-slate-950/60 rounded-2xl p-6 text-center transition-all cursor-pointer flex flex-col items-center justify-center min-h-[175px]">
+                <input type="file" id="resumeFileInput" name="resume_file" accept=".pdf,.docx,.md,.txt" class="hidden" onchange="handleFileSelected(event)">
+                <div class="w-12 h-12 rounded-xl bg-brand-50 dark:bg-slate-800 flex items-center justify-center text-brand-600 dark:text-brand-400 mb-3 shadow-inner">
+                  <i data-lucide="upload-cloud" class="w-6 h-6"></i>
+                </div>
+                <p id="fileStatusText" class="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1">Click to browse or drop resume file here</p>
+                <p class="text-xs text-slate-500">Max size: 10MB • Magic-byte signature verified</p>
+              </div>
+            </div>
+
+            <!-- Column 2: Target Job Description -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2 flex items-center justify-between">
+                <span>2. Target Job Description</span>
+                <span class="text-[11px] font-mono text-slate-500">Paste Text or URL</span>
+              </label>
+              <div class="space-y-3">
+                <textarea id="jdTextArea" rows="4" placeholder="Paste target Job Description text here (responsibilities, required qualifications, tech stack, company info)..." class="w-full bg-slate-50 dark:bg-slate-950/60 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-xs font-mono text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-brand-500 transition-all"></textarea>
+                <div class="flex items-center space-x-2">
+                  <div class="relative flex-1">
+                    <i data-lucide="link" class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5"></i>
+                    <input type="url" id="jdUrlInput" placeholder="Or enter job posting URL (SSRF pre-validated)" class="w-full pl-9 pr-3 py-1.5 bg-slate-50 dark:bg-slate-950/60 border border-slate-300 dark:border-slate-700 rounded-lg text-xs text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-brand-500">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Action Button & Privacy Status -->
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+            <div class="flex items-center space-x-2 text-xs text-slate-500 font-mono">
+              <i data-lucide="shield-check" class="w-4 h-4 text-emerald-500"></i>
+              <span>Universal Analysis • Works for any candidate resume, job text, or posting URL</span>
+            </div>
+
+            <button type="submit" id="submitBtn" class="w-full sm:w-auto px-8 py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm tracking-wide shadow-md shadow-brand-500/25 transition-all flex items-center justify-center space-x-2">
+              <i data-lucide="cpu" class="w-4 h-4"></i>
+              <span>Analyze with CrewAI Agents</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </section>
+
+    <!-- LOADING STATE -->
+    <div id="loadingOverlay" class="hidden my-16 text-center">
+      <div class="relative w-16 h-16 mx-auto mb-6">
+        <div class="absolute inset-0 rounded-full border-4 border-slate-200 dark:border-slate-800"></div>
+        <div class="absolute inset-0 rounded-full border-4 border-brand-600 border-t-transparent animate-spin"></div>
+        <i data-lucide="cpu" class="w-6 h-6 text-brand-600 absolute inset-0 m-auto"></i>
+      </div>
+      <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1" id="loadingTitle">Running CrewAI Multi-Agent Pipeline</h3>
+      <p class="text-xs font-mono text-brand-600 dark:text-brand-400" id="loadingStep">Executing: Resume Agent • JD Agent • ATS Scorer • Interview Coach</p>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- RESULTS SECTION (HIDDEN UNTIL ANALYZED)                      -->
+    <!-- ============================================================ -->
+    <section id="resultsSection" class="hidden space-y-6 animate-fade-in">
+
+      <!-- Candidate & Role Summary Banner -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center space-x-2 mb-1">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white" id="summaryCandName">Candidate Profile</h3>
+            <span class="text-xs text-slate-400 font-mono">•</span>
+            <span class="text-xs font-mono text-brand-600 dark:text-brand-400 font-bold" id="summaryTargetRole">Target Role</span>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 font-mono" id="summarySubText">CrewAI Multi-Agent Evaluation Completed</p>
+        </div>
+
+        <button onclick="document.getElementById('analyzeCard').scrollIntoView({behavior: 'smooth'})" class="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-800 dark:text-slate-200 text-xs font-bold transition-all flex items-center space-x-1.5">
+          <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+          <span>Analyze Another Resume</span>
+        </button>
+      </div>
+
+      <!-- TAB 1: ATS SCORE & DASHBOARD -->
+      <div id="tab-dashboard" class="tab-content space-y-6">
+        
+        <!-- Mismatch / Success Banner -->
+        <div id="dashAlertBanner" class="hidden"></div>
+
+        <!-- Metric Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          
+          <!-- Card 1: ATS Score -->
+          <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Overall ATS Score</span>
+              <span class="p-1.5 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-brand-600">
+                <i data-lucide="shield-check" class="w-4 h-4"></i>
+              </span>
+            </div>
+            <div class="flex items-baseline space-x-2">
+              <span id="dashAtsScore" class="text-4xl font-extrabold text-slate-900 dark:text-white">0</span>
+              <span class="text-xs font-mono text-slate-400">/ 100</span>
+            </div>
+            <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 mt-3 overflow-hidden">
+              <div id="dashAtsBar" class="bg-brand-600 h-2 rounded-full transition-all duration-700" style="width: 0%"></div>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-2 font-mono" id="dashAtsStatus">Explainable Rule-Based Score</p>
+          </div>
+
+          <!-- Card 2: JD Match -->
+          <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-400">JD Match Ratio</span>
+              <span class="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600">
+                <i data-lucide="target" class="w-4 h-4"></i>
+              </span>
+            </div>
+            <div class="flex items-baseline space-x-2">
+              <span id="dashJdMatch" class="text-4xl font-extrabold text-indigo-600 dark:text-indigo-400">0%</span>
+            </div>
+            <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 mt-3 overflow-hidden">
+              <div id="dashJdBar" class="bg-indigo-500 h-2 rounded-full transition-all duration-700" style="width: 0%"></div>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-2 font-mono truncate" id="dashJdRole">Target Engineering Role</p>
+          </div>
+
+          <!-- Card 3: Skills Alignment -->
+          <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Keywords Matched</span>
+              <span class="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600">
+                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+              </span>
+            </div>
+            <div class="flex items-baseline space-x-2">
+              <span id="dashSkillsCount" class="text-4xl font-extrabold text-emerald-600 dark:text-emerald-400">0</span>
+              <span id="dashSkillsTotal" class="text-xs font-mono text-slate-400">/ 0</span>
+            </div>
+            <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 mt-3 overflow-hidden">
+              <div id="dashSkillsBar" class="bg-emerald-500 h-2 rounded-full transition-all duration-700" style="width: 0%"></div>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-2 font-mono" id="dashSkillsStatus">0 Strong • 0 Missing</p>
+          </div>
+
+          <!-- Card 4: Experience Alignment -->
+          <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Experience Alignment</span>
+              <span class="p-1.5 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-600">
+                <i data-lucide="briefcase" class="w-4 h-4"></i>
+              </span>
+            </div>
+            <div class="flex items-baseline space-x-2">
+              <span id="dashExpMatch" class="text-3xl font-extrabold text-amber-600 dark:text-amber-400">Strong</span>
+            </div>
+            <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 mt-3 overflow-hidden">
+              <div id="dashExpBar" class="bg-amber-500 h-2 rounded-full transition-all duration-700" style="width: 85%"></div>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-2 font-mono" id="dashEduStatus">Seniority Aligned</p>
+          </div>
+
+        </div>
+
+        <!-- Dimensional Breakdown -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4 flex items-center space-x-2">
+              <i data-lucide="bar-chart-3" class="w-4 h-4 text-brand-600"></i>
+              <span>ATS Dimensional Breakdown (Explainable Scoring Rules)</span>
+            </h3>
+            <div class="space-y-4" id="atsBreakdownContainer"></div>
+            <div class="mt-4 p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 font-mono" id="atsRationaleText"></div>
+          </div>
+
+          <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4 flex items-center space-x-2">
+              <i data-lucide="layers" class="w-4 h-4 text-indigo-500"></i>
+              <span>Domain Alignment</span>
+            </h3>
+            <div class="space-y-4" id="domainMatchContainer"></div>
+          </div>
+        </div>
+
+        <!-- Risks & Improvement Suggestions -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+            <h4 class="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider mb-3 flex items-center space-x-2">
+              <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+              <span>Formatting Risks & Potential ATS Hurdles</span>
+            </h4>
+            <ul id="formattingRisksList" class="space-y-2 text-xs text-slate-700 dark:text-slate-300 font-mono"></ul>
+          </div>
+
+          <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+            <h4 class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-wider mb-3 flex items-center space-x-2">
+              <i data-lucide="lightbulb" class="w-4 h-4"></i>
+              <span>Actionable Recommendations</span>
+            </h4>
+            <ul id="improvementSuggestionsList" class="space-y-2 text-xs text-slate-700 dark:text-slate-300"></ul>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- TAB 2: SKILLS & GAP ANALYSIS -->
+      <div id="tab-skills" class="tab-content hidden space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Strong Matches -->
+          <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+            <h3 class="text-sm font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-4 flex items-center space-x-2">
+              <i data-lucide="check-circle" class="w-4 h-4"></i>
+              <span>Strong Technical Matches</span>
+            </h3>
+            <div id="strongMatchesList" class="space-y-2.5"></div>
+          </div>
+
+          <!-- Missing Skills -->
+          <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+            <h3 class="text-sm font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider mb-4 flex items-center space-x-2">
+              <i data-lucide="alert-circle" class="w-4 h-4"></i>
+              <span>Missing Keywords & Gaps</span>
+            </h3>
+            <div id="partialMatchesList" class="space-y-2.5"></div>
+          </div>
+        </div>
+
+        <!-- Roadmaps -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+          <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4 flex items-center space-x-2">
+            <i data-lucide="compass" class="w-4 h-4 text-brand-600"></i>
+            <span>Actionable Skill Bridge Roadmaps</span>
+          </h3>
+          <div id="skillRoadmapsContainer" class="space-y-4"></div>
+        </div>
+      </div>
+
+      <!-- TAB 3: STAR RESUME TAILORING -->
+      <div id="tab-optimizer" class="tab-content hidden space-y-6">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Fact-Grounded Resume Tailoring (STAR Method)</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Generated by the Resume Optimizer Agent. Enhances action verbs and quantified outcomes without fabricating claims.</p>
+          </div>
+          <div id="optimizerCardsContainer" class="space-y-6"></div>
+        </div>
+      </div>
+
+      <!-- TAB 4: INTERVIEW PREPARATION & PATTERNS -->
+      <div id="tab-interview" class="tab-content hidden space-y-6">
+        <!-- Section A: Company & Role Interview Patterns (Web & Industry Rounds) -->
+        <div id="interviewPatternContainer" class="space-y-4"></div>
+
+        <!-- Section B: Role-Specific Questions & Interactive Mock Simulator -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-100 dark:border-slate-800">
+            <div>
+              <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                <i data-lucide="message-square" class="w-5 h-5 text-brand-600"></i>
+                <span>Role-Specific Interview Questions & Simulator</span>
+              </h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Synthesized by the Interview Preparation Agent from target JD duties, web-reported questions, and candidate facts.</p>
+            </div>
+            <span class="px-3 py-1 rounded-full bg-brand-50 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300 font-mono text-[11px] font-bold self-start sm:self-auto border border-brand-200 dark:border-brand-500/30">
+              Interactive Mock Practice
+            </span>
+          </div>
+          <div id="interviewQuestionsContainer" class="space-y-5"></div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- MOCK INTERVIEW SIMULATOR MODAL -->
+  <div id="mockModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-700">
+        <span class="text-xs font-bold text-brand-600 uppercase tracking-wider font-mono">Mock Interview Simulator</span>
+        <button onclick="closeMockModal()" class="text-slate-400 hover:text-slate-700 dark:hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div>
+        <p class="text-xs text-slate-500 mb-1">Interview Question:</p>
+        <p id="mockQuestionText" class="text-sm font-semibold text-slate-900 dark:text-white"></p>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Your Answer:</label>
+        <textarea id="mockAnswerInput" rows="5" placeholder="Type your answer using the STAR method (Situation, Task, Action, Result) with specific engineering trade-offs..." class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-800 dark:text-slate-200 font-mono focus:border-brand-500 focus:outline-none"></textarea>
+      </div>
+
+      <div class="flex justify-end space-x-3">
+        <button onclick="closeMockModal()" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs">Cancel</button>
+        <button onclick="submitMockAnswer()" id="mockSubmitBtn" class="px-6 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs flex items-center space-x-2">
+          <i data-lucide="send" class="w-4 h-4"></i>
+          <span>Evaluate Answer</span>
+        </button>
+      </div>
+
+      <div id="mockEvalResult" class="hidden space-y-4 pt-4 border-t border-slate-200 dark:border-slate-700"></div>
+    </div>
+  </div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

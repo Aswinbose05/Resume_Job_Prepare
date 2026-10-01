@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  career-intelligence-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: career_intelligence_platform
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./resume-tailor-ai/.env
+    environment:
+      - PORT=8000
+      - HOST=0.0.0.0
+      - DEBUG=false
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

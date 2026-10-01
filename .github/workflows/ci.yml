@@ -1,0 +1,34 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Verify Application Imports
+        run: |
+          PYTHONPATH=resume-tailor-ai python -c "import fastapi, pydantic, crewai, portkey_ai, groq, langsmith; print('ALL CORE IMPORTS OK')"
+
+      - name: Run Unit, Security & Evaluation Tests
+        run: |
+          PYTHONPATH=resume-tailor-ai pytest resume-tailor-ai/tests/ -v
