@@ -22,16 +22,23 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PATH="/home/appuser/.local/bin:$PATH" \
-    PYTHONPATH="/app/resume-tailor-ai:$PYTHONPATH"
+    PYTHONPATH="/app/resume-tailor-ai:$PYTHONPATH" \
+    HOME="/home/appuser"
 
-# Create unprivileged service user for security
+# Create unprivileged service user and initialize home directories
 RUN useradd -m -u 1000 appuser && \
     apt-get update && apt-get install -y --no-install-recommends \
     curl \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* && \
+    mkdir -p /home/appuser/.local/share/app /home/appuser/.cache /tmp/chroma && \
+    chown -R appuser:appuser /home/appuser /tmp/chroma
 
-COPY --from=builder /root/.local /home/appuser/.local
+COPY --from=builder --chown=appuser:appuser /root/.local /home/appuser/.local
 COPY --chown=appuser:appuser . /app
+
+# Ensure full permissions for appuser across home and working directory
+RUN chown -R appuser:appuser /home/appuser /app && \
+    chmod -R 775 /home/appuser
 
 USER appuser
 

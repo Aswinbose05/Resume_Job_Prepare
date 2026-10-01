@@ -17,6 +17,12 @@ if os.path.exists(sub_dir):
 else:
     sys.path.insert(0, base_dir)
 
+# Ensure data directory expected by CrewAI / Chroma exists
+try:
+    os.makedirs(os.path.expanduser("~/.local/share/app"), exist_ok=True)
+except Exception:
+    pass
+
 from core.config import settings
 from core.logger import logger
 
