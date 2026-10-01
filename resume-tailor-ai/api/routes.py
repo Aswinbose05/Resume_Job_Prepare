@@ -61,6 +61,7 @@ async def serve_index():
 
 
 @app.get("/api/health")
+@app.get("/healthz")
 async def health_check():
     """System health check and readiness."""
     return {
