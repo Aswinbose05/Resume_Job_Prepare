@@ -1,56 +1,83 @@
-# AI Career Intelligence Platform ⚡
+# CareerPilot AI — AI Resume Analyzer & Job Preparation System ⚡
 
-[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg)](https://fastapi.tiangolo.com/)
-[![CrewAI](https://img.shields.io/badge/CrewAI-1.14+-FF4B4B.svg)](https://www.crewai.com/)
-[![Portkey](https://img.shields.io/badge/Portkey-AI%20Gateway-indigo.svg)](https://portkey.ai/)
-[![LangSmith](https://img.shields.io/badge/LangSmith-Observability-orange.svg)](https://smith.langchain.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+<p align="center">
+  <img src="assets/thumbnail.jpg" alt="CareerPilot AI Platform Banner" width="100%" />
+</p>
 
-> **Enterprise-grade Multi-Agent AI Career Intelligence & Resume Optimization Platform.**  
-> Built with CrewAI, deterministic explainable ATS scoring, Portkey AI Gateway, multi-tier free LLM failover, and comprehensive OWASP LLM security controls.
+<p align="center">
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.12-3776AB?style=flat&logo=python&logoColor=white" alt="Python 3.12" /></a>
+  <a href="https://fastapi.tiangolo.com/"><img src="https://img.shields.io/badge/FastAPI-0.115+-009688?style=flat&logo=fastapi&logoColor=white" alt="FastAPI" /></a>
+  <a href="https://www.crewai.com/"><img src="https://img.shields.io/badge/CrewAI-Multi--Agent-FF4B4B?style=flat&logo=crewai&logoColor=white" alt="CrewAI" /></a>
+  <a href="https://render.com/"><img src="https://img.shields.io/badge/Render-Live%20Deploy-46E3B7?style=flat&logo=render&logoColor=white" alt="Render" /></a>
+  <a href="https://www.docker.com/"><img src="https://img.shields.io/badge/Docker-Ready-2496ED?style=flat&logo=docker&logoColor=white" alt="Docker" /></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" /></a>
+</p>
+
+> **Autonomous Multi-Agent Career & Resume Intelligence Platform.**  
+> Powered by **CrewAI**, a **deterministic ATS scoring engine**, **multi-format document parsers**, and **enterprise AI security guardrails**. Evaluates resumes against any target Job Description or live job URL, identifies skill gaps, rewrites experience using the STAR methodology, and generates company-specific interview preparation strategies.
 
 ---
 
 ## 📑 Table of Contents
 
-- [Overview](#overview)
-- [Key Features](#key-features)
-- [System Architecture](#system-architecture)
-- [AI Security Architecture](#ai-security-architecture)
-- [Multi-Agent Design (CrewAI)](#multi-agent-design-crewai)
-- [Free LLM Routing Strategy](#free-llm-routing-strategy)
-- [Portkey AI Gateway Integration](#portkey-ai-gateway-integration)
-- [LangSmith Observability & Tracing](#langsmith-observability--tracing)
-- [Tech Stack](#tech-stack)
-- [Installation & Quickstart](#installation--quickstart)
-- [Environment Variables](#environment-variables)
-- [Testing Suite](#testing-suite)
-- [Deployment](#deployment)
-- [Interview Explanation Guide](#interview-explanation-guide)
-- [Limitations & Roadmap](#limitations--roadmap)
+- [Overview](#-overview)
+- [Key Features](#-key-features)
+- [System Architecture](#-system-architecture)
+- [Multi-Agent Design (CrewAI)](#-multi-agent-design-crewai)
+- [Deterministic ATS Scoring Engine](#-deterministic-ats-scoring-engine)
+- [AI Security & Guardrails](#-ai-security--guardrails)
+- [Tech Stack](#-tech-stack)
+- [Quickstart & Installation](#-quickstart--installation)
+- [Environment Configuration](#-environment-configuration)
+- [Live Cloud Deployment](#-live-cloud-deployment)
+- [Testing & Quality Assurance](#-testing--quality-assurance)
+- [Interview & Engineering Talking Points](#-interview--engineering-talking-points)
+- [License](#-license)
 
 ---
 
-## 🚀 Platform Architecture & Modules
+## 🌟 Overview
 
-The platform is designed around two integrated modules sharing a unified security layer, LLM gateway, and observability framework:
+Applying for jobs with generic resumes and opaque Applicant Tracking Systems (ATS) is frustrating. Most existing AI resume builders are simple single-prompt wrappers that hallucinate metrics or invent skills that the candidate never had.
 
-### 📄 Module 1: AI Resume Analyzer & Multi-Agent Optimization
-1. **Multi-Format Ingestion:** Native parsing of **PDF, DOCX, Markdown, and TXT** documents with magic-byte signature validation.
-2. **Deterministic ATS Engine:** Explainable 0–100 scoring based on mathematical keyword density, technical competency alignment, seniority weighting, and structural integrity.
-3. **Skill Intelligence:** Automatic categorization into `STRONG`, `PARTIAL`, and `MISSING` skills with step-by-step learning roadmaps.
-4. **Fact-Grounded Resume Optimizer:** Transforms raw bullets into active STAR/XYZ-format achievements strictly bound to candidate truth (zero hallucination).
-5. **Interactive Mock Interview Simulator:** Evaluates candidate answers across 5 engineering dimensions with rubric-scored feedback.
+**CareerPilot AI** solves this through a robust **Multi-Agent Architecture**:
+1. **Fact-Grounded Analysis:** Never fabricates qualifications or credentials.
+2. **Deterministic Mathematical Scoring:** Calculates objective ATS compatibility scores instead of relying on subjective LLM guesses.
+3. **Actionable Career Intelligence:** Pinpoints missing skills, provides custom learning roadmaps, tailors bullets using STAR/XYZ formulas, and synthesizes real-world company interview patterns.
+4. **Enterprise Defense in Depth:** Shields the pipeline against prompt injection, SSRF exploits during URL scraping, and PII leakage.
 
-### 🤖 Module 2: AI Career Research & Preparation RAG Assistant
-1. **Multi-Source Ingestion:** Ingests and partitions user knowledge documents (PDF, DOCX, TXT, MD, CSV) into semantic chunks.
-2. **100% Free Local Vector Storage:** Utilizes local ONNX embeddings (`all-MiniLM-L6-v2`, 384 dimensions) and persistent ChromaDB with metadata filtering.
-3. **LangGraph State Routing:** State machine workflow directing queries across `COMPANY_RESEARCH`, `INTERVIEW_PREP`, `RESUME_COMPARISON`, and `DOCUMENT_QA`.
-4. **Live Web Intelligence:** Integrates Serper Google search and public engineering knowledge with SSRF guardrails.
-5. **Cross-Module Context Bridge:** Seamlessly forwards candidate profile strengths, target JD criteria, and missing skills from Module 1 into Module 2.
-6. **Verifiable Citations:** Sourced responses with exact document names, sections, page numbers, similarity match %, and clickable web links.
-7. **Strategic Preparation Dossier:** Generates actionable 14-day / 30-day study roadmaps with exportable Markdown reports.
+---
+
+## 🚀 Key Features
+
+### 1. 📊 Deterministic ATS Scoring & Detailed Breakdown
+- Multi-format ingestion supporting **PDF, DOCX, TXT, and Markdown** resumes.
+- Weighted scoring rubric evaluating:
+  - **Keyword Coverage (35%):** Exact & fuzzy keyword matching against job requirements.
+  - **Technical Alignment (25%):** Hard skills, toolchains, frameworks, and architecture match.
+  - **Experience & Impact (20%):** Quantifiable metrics ($ / % / numbers), action verbs, and seniority level.
+  - **Education & Domain (10%):** Degree and industry specialization fit.
+  - **Formatting & ATS Readability (10%):** Section headers, contact data, clean hierarchy.
+
+### 2. 🛠 Skill Matrix & Intelligent Gap Analysis
+- Categorizes all skills into:
+  - **✅ Matched Skills:** Verified strengths already in the resume.
+  - **⚠️ Partial Matches:** Related concepts or foundational skills that can be highlighted.
+  - **❌ Missing Skills:** High-priority requirements missing from the profile.
+- Generates a **step-by-step learning roadmap** with actionable recommendations.
+
+### 3. 📄 STAR-Method Tailored Resume Optimization
+- Transforms weak, passive resume bullet points into high-impact **Situation - Task - Action - Result (STAR)** accomplishments.
+- Strict anti-hallucination constraint: strictly rewrites existing experiences without inventing fictional jobs or responsibilities.
+- Generates copy-ready, ATS-optimized Markdown bullets with quantifiable impact.
+
+### 4. 🎤 Company Interview Patterns & Mock Simulator
+- Researches company-specific interview themes, question patterns, and technical bar-raiser expectations.
+- Generates categorized practice questions:
+  - **Core Technical & Architecture**
+  - **Behavioral & Leadership**
+  - **System Design / Problem Solving**
+- **Interactive Mock Simulator:** Users can input answers to receive instant rubric-based evaluations with constructive improvement feedback.
 
 ---
 
@@ -58,161 +85,117 @@ The platform is designed around two integrated modules sharing a unified securit
 
 ```mermaid
 flowchart TD
-    User([User]) --> UI[Futuristic Web Dashboard - Glassmorphism UI]
-    UI --> API[FastAPI Gateway / REST Endpoints]
+    User([Job Candidate]) --> WebUI[Modern Glassmorphism Web Dashboard]
+    WebUI --> API[FastAPI Gateway / REST Endpoints]
 
-    subgraph Security Layer
-        API --> Val[File Validator & Magic-Byte Scanner]
-        Val --> InjDet[Prompt Injection & Jailbreak Guard]
-        InjDet --> SSRF[SSRF & Outbound URL Guard]
-        SSRF --> PII[PII Detector & Redactor]
+    subgraph Security Layer [🛡️ AI Security & Guardrails]
+        API --> FileVal[Magic-Byte File Validator]
+        FileVal --> PGuard[Prompt Injection & Jailbreak Guard]
+        PGuard --> SSRF[SSRF Guard & DNS Pre-Resolver]
+        SSRF --> PII[PII Anonymization & Masking]
         PII --> RL[Token-Bucket Rate Limiter]
     end
 
-    subgraph AI Gateway & Routing
-        RL --> Portkey[Portkey AI Gateway]
-        Portkey -->|Primary| Gemini[Google Gemini 1.5/2.0 Flash - Free Tier]
-        Portkey -->|Fallback 1| Groq[Groq Llama 3.3 70B - Free Tier]
-        Portkey -->|Fallback 2| OpenRouter[OpenRouter Free Tier Models]
+    subgraph Parsers [📄 Document & Web Parsers]
+        RL --> ResumeParser[Resume Parser: PDF / DOCX / TXT]
+        RL --> JDParser[JD Parser: Text & Live URL Scraper]
     end
 
-    subgraph Multi-Agent Orchestrator CrewAI
-        Portkey --> Crew[CrewAI Orchestrator]
-        Crew --> RA[Resume Profiler Agent]
-        Crew --> JDA[Job Intelligence Agent]
-        Crew --> ROA[Resume Optimizer Agent]
-        Crew --> ICA[Interview Coach Agent]
+    subgraph Agentic Pipeline [🤖 CrewAI Multi-Agent Pipeline]
+        ResumeParser & JDParser --> Crew[CrewAI Orchestration Engine]
+        Crew --> Agent1[Resume Profiler Agent]
+        Crew --> Agent2[Job Market Intelligence Agent]
+        Crew --> Agent3[STAR Resume Optimizer Agent]
+        Crew --> Agent4[Engineering Interview Coach Agent]
     end
 
-    subgraph Deterministic Rule Engine
-        RA & JDA --> ATS[Explainable ATS Scorer]
-        RA & JDA --> SkillEng[Skill Intelligence & Gap Taxonomy]
-        ATS & SkillEng --> StructuredOutput[Pydantic Validated Result]
+    subgraph Deterministic Engine [📐 Mathematical Rule Engine]
+        ResumeParser & JDParser --> ATS[Deterministic ATS Scorer]
+        ResumeParser & JDParser --> SkillMat[Skill Alignment & Gap Engine]
     end
 
-    subgraph Observability
-        Crew -.-> LangSmith[LangSmith Distributed Traces]
-        Portkey -.-> PortkeyObs[Portkey Gateway Metrics]
-    end
-
-    StructuredOutput --> API
+    Agent1 & Agent2 & Agent3 & Agent4 --> Synthesizer[Response Aggregator & Schema Validator]
+    ATS & SkillMat --> Synthesizer
+    Synthesizer --> WebUI
 ```
-
----
-
-## 🛡️ AI Security Architecture
-
-Security controls are implemented against common AI application risks (OWASP LLM Top 10):
-
-```mermaid
-flowchart LR
-    Input[User Resume & JD Input] --> PG[Prompt Injection Guard]
-    PG -->|Scan Delimiters & Keywords| XML[Data Isolation Container]
-    XML --> SSRF[SSRF DNS Pre-Resolver]
-    SSRF -->|Block Private Subnets & Cloud Meta| Sanitizer[PII Masking]
-    Sanitizer --> LLM[LLM Execution Layer]
-    LLM --> Pydantic[Pydantic Output Validation & Repair]
-    Pydantic --> SafeOutput[Safe Rendered Result]
-```
-
-### 1. Prompt Injection Defense
-- Wraps untrusted inputs in explicit structural XML boundaries (`<UNTRUSTED_DOCUMENT_DATA>`).
-- Instructs the model that content between tags is inert data and must never be executed as instructions.
-- Detects instruction overrides, system prompt exfiltration attempts, and special control tokens (`<|im_start|>`, `[SYSTEM]`).
-
-### 2. SSRF Protection
-- Outbound job scraping URLs undergo scheme checks (HTTP/HTTPS only).
-- Resolves DNS before request execution to block loopback (`127.0.0.1`), link-local (`169.254.169.254`), and private subnets (`10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`).
-- Supports RFC 6052 NAT64 prefixes (`64:ff9b::/96`) for modern IPv6 connectivity.
-
-### 3. Magic-Byte File Validation
-- Rejects renamed executables or spoofed extensions.
-- Validates file signatures (`%PDF-` for PDFs, `PK\x03\x04` for DOCX).
-- Enforces a 10MB file limit and a 15-page ceiling to prevent decompression bombs.
-
-### 4. PII Protection
-- Scans and masks email addresses and phone numbers before dispatching logs or external traces.
-- Supports reversible tokenization (`[EMAIL_1]`, `[PHONE_1]`).
 
 ---
 
 ## 🤖 Multi-Agent Design (CrewAI)
 
-| Agent | Role | Responsibility |
+| Agent | Specialized Role | Goal & Responsibilities |
 | :--- | :--- | :--- |
-| **Senior Resume Profiler** | Tech Profiler | Extracts verified competencies and project architectures without hallucination. |
-| **Tech Job Market Specialist** | Market Sourcer | Deconstructs job descriptions into hard technical must-haves and nice-to-haves. |
-| **Principal Resume Strategist** | Career Optimizer | Enhances bullet points into high-impact STAR/XYZ statements strictly grounded in facts. |
-| **Engineering Interview Coach** | Bar Raiser | Generates cross-domain questions and objectively evaluates candidate answers. |
+| **Senior Resume Profiler** | Candidate Competency Auditor | Thoroughly inspects candidate background, extracting verified technical proficiencies, architectures, and career trajectory without hallucination. |
+| **Tech Job Market Specialist** | Role & Market Deconstructor | Deconstructs job descriptions or scraped job URLs into hard prerequisites, tech stacks, soft competencies, and seniority expectations. |
+| **Principal Resume Strategist** | STAR / XYZ Career Optimizer | Rewrites candidate accomplishments into high-impact, measurable STAR statements strictly grounded in factual history. |
+| **Engineering Interview Coach** | Bar Raiser & Pattern Specialist | Formulates company-tailored technical & behavioral interview questions and conducts automated answer evaluations. |
 
 ---
 
-## 💸 Free LLM Routing Strategy
+## 📐 Deterministic ATS Scoring Engine
 
-The platform runs on free-tier LLMs:
+Unlike standard AI wrappers that ask an LLM to *"Rate this resume from 1 to 100"* (which yields fluctuating, non-reproducible numbers), CareerPilot AI employs a **deterministic scoring algorithm**:
 
-```text
-Primary Provider: Google Gemini 1.5 Flash (Free Tier: 15 RPM / 1M TPM)
-         │ (Rate limited or quota exceeded)
-         ▼
-Fallback 1:       Groq Llama 3.3 70B Versatile (Free Tier: 30 RPM)
-         │ (Fallback failure)
-         ▼
-Fallback 2:       OpenRouter Free Models (meta-llama/llama-3.1-8b-instruct:free)
-         │ (Offline or test execution)
-         ▼
-Mock Mode:        High-Accuracy Deterministic Rule Fallback
-```
+$$\text{ATS Score} = (0.35 \times K) + (0.25 \times T) + (0.20 \times E) + (0.10 \times D) + (0.10 \times F)$$
+
+Where:
+* **$K$ (Keyword Coverage):** Exact and semantic frequency match across required skills.
+* **$T$ (Technical Alignment):** Hard competency overlap against candidate skills.
+* **$E$ (Experience & Impact):** Density of quantifiable impact metrics (e.g. percentages, currency, scale) and strong action verbs.
+* **$D$ (Education & Domain):** Degree level, certifications, and industry domain alignment.
+* **$F$ (Formatting Integrity):** Standard section headers (Experience, Skills, Education), structural clarity, and contact info completeness.
 
 ---
 
-## 🔌 Portkey AI Gateway Integration
+## 🛡️ AI Security & Guardrails
 
-[Portkey](https://portkey.ai/) acts as the centralized AI Gateway:
-- **Unified Interface:** Standardized routing across Gemini, Groq, and OpenAI-compatible models.
-- **Enterprise Guardrails:** Enforces input/output controls at the network gateway level.
-- **Request Metadata Tagging:** Every request includes metadata (`project=ai-career-intelligence`, `feature=resume_optimizer`, `environment=production`).
+Built with production safety principles aligned with the **OWASP Top 10 for LLM Applications**:
 
----
-
-## 📊 LangSmith Observability & Tracing
-
-[LangSmith](https://smith.langchain.com/) provides complete visibility into multi-agent workflows:
-- **Trace Spans:** Track execution latency and token consumption across all agent tasks.
-- **Tool Tracing:** Monitor web search queries and document parser operations.
-- **Redacted Telemetry:** PII is sanitized before traces are logged to cloud telemetry.
+1. **Prompt Injection & Jailbreak Defense (`prompt_guard.py`):**
+   - Scans user documents and job descriptions for prompt override triggers (e.g., `"ignore previous instructions"`, `"you are now in developer mode"`).
+   - Encloses external text within inert XML containers (`<UNTRUSTED_DOCUMENT_DATA>`).
+2. **SSRF Mitigation with DNS Pre-Resolution (`ssrf_guard.py`):**
+   - When scraping job descriptions via URL, resolves DNS before dispatch to block loopback (`127.0.0.1`), private subnets (`10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`), and AWS/GCP metadata endpoints (`169.254.169.254`).
+3. **Magic-Byte Signature Verification (`file_validator.py`):**
+   - Inspects file binary signatures (`%PDF-`, `PK\x03\x04`) rather than relying on file extensions alone, preventing malicious executable uploads.
+4. **PII Anonymization (`pii_sanitizer.py`):**
+   - Redacts sensitive personal information (emails, phone numbers) before processing external LLM traces.
+5. **Token-Bucket Rate Limiter (`rate_limiter.py`):**
+   - Protects API endpoints from abuse and brute-force flooding.
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Backend:** Python 3.12, FastAPI, Uvicorn, Pydantic V2
-- **Agent Orchestration:** CrewAI 1.14
-- **AI Gateways & Tracing:** Portkey AI, LangSmith
-- **Document Parsers:** pdfplumber, python-docx, beautifulsoup4
-- **Frontend:** HTML5, Tailwind CSS, Lucide Icons, Vanilla ES6 JavaScript (Zero Node build dependencies)
-- **Deployment & DevOps:** Docker (multi-stage non-root), Docker Compose, GitHub Actions CI, Streamlit Cloud Adaptor
+- **Core Language:** Python 3.12
+- **Agent Framework:** CrewAI
+- **Backend API:** FastAPI, Uvicorn, Pydantic v2
+- **LLM Integrations:** Google Gemini 1.5/2.0 Flash (Primary), Groq Llama 3.3 70B (Fallback), OpenRouter
+- **Parsers & Scraping:** `PyPDF2`, `python-docx`, `beautifulsoup4`, `urllib3`
+- **Frontend:** Responsive Glassmorphism UI (HTML5, Vanilla ES6 JavaScript, Tailwind CSS, Lucide Icons)
+- **Containerization & CI/CD:** Docker (Multi-stage non-root build), Docker Compose, GitHub Actions
+- **Cloud Hosting:** Render, Railway
 
 ---
 
-## ⚙️ Installation & Quickstart
+## ⚙️ Quickstart & Installation
 
 ### Prerequisites
-- Python 3.12+ installed
+- Python 3.10+ (Python 3.12 recommended)
 - Git
 
-### 1. Clone & Set Up Virtual Environment
+### 1. Clone Repository & Create Virtual Environment
 ```bash
-git clone https://github.com/Aswinbose05/Resume_Analyzer.git
-cd Resume_Analyzer
+git clone https://github.com/Aswinbose05/Resume_Job_Prepare.git
+cd Resume_Job_Prepare
 
 # Create virtual environment
 python -m venv venv
 
 # Activate virtual environment
-# Windows:
-.\venv\Scripts\activate
-# Linux/macOS:
+# On Windows:
+venv\Scripts\activate
+# On macOS / Linux:
 source venv/bin/activate
 
 # Install dependencies
@@ -220,87 +203,92 @@ pip install -r requirements.txt
 ```
 
 ### 2. Configure Environment Variables
-Copy the template and add at least one free LLM API key (e.g. Gemini):
+Create a `.env` file from the example:
 ```bash
 cp .env.example .env
 ```
-Edit `.env`:
+Add your free Gemini API key (or Groq API key):
 ```env
-GOOGLE_API_KEY=your_gemini_api_key_here
-# Optional fallbacks
-GROQ_API_KEY=your_groq_api_key_here
-PORTKEY_API_KEY=your_portkey_key_here
+GEMINI_API_KEY=your_gemini_api_key_here
+PRIMARY_LLM_PROVIDER=gemini
+PORT=8000
 ```
 
-### 3. Launch the Platform
+### 3. Launch the Application
 ```bash
 python run.py
 ```
-Open your browser and navigate to:  
-👉 **`http://localhost:8000`**
-
-*(To launch the Streamlit Cloud fallback interface instead, run: `streamlit run streamlit_app.py`)*
+Visit **`http://localhost:8000`** in your browser.
 
 ---
 
-## 🧪 Testing Suite
+## ☁️ Live Cloud Deployment
 
-Run the full suite of unit, security, and evaluation tests:
+### Deploy on Render.com (100% Free)
+The repository includes a production-ready `render.yaml` blueprint and `Dockerfile`:
+1. Push your repository to GitHub.
+2. Sign in to [render.com](https://render.com) and click **New +** &rarr; **Web Service**.
+3. Select your `Resume_Job_Prepare` repository.
+4. Set:
+   - **Environment:** `Docker` (or `Python 3`)
+   - **Health Check Path:** `/healthz` (or `/api/health`)
+   - **Environment Variables:**
+     - `GEMINI_API_KEY`: *Your API Key*
+     - `PRIMARY_LLM_PROVIDER`: `gemini`
+5. Click **Deploy Web Service**.
+
+### Deploy with Docker
 ```bash
+# Build the container image
+docker build -t careerpilot-ai .
+
+# Run the container
+docker run -d -p 8000:8000 -e GEMINI_API_KEY="your_api_key" careerpilot-ai
+```
+
+---
+
+## 🧪 Testing & Quality Assurance
+
+The codebase includes comprehensive unit, evaluation, and security test suites:
+```bash
+# Run all tests
 pytest resume-tailor-ai/tests/ -v
 ```
-All 12 test modules verify:
-- Parser integrity & missing field handling
-- Deterministic ATS score consistency
-- Prompt injection & jailbreak detection
-- SSRF private IP blocking
-- Magic-byte file validation
-- Anti-hallucination policy enforcement
+
+**Test Coverage Areas:**
+- `test_parsers.py`: PDF, DOCX, and TXT parsing integrity, corrupt file handling.
+- `test_engine.py`: Deterministic scoring mathematical stability and keyword accuracy.
+- `test_security.py`: Prompt injection blocking, SSRF IP filtering, PII sanitization.
+- `test_crew_pipeline.py`: CrewAI agent execution, task synchronization, anti-hallucination checks.
+- `test_evaluation.py`: End-to-end benchmark evaluation.
 
 ---
 
-## 🐳 Deployment
+## 💼 Interview & Engineering Talking Points
 
-### Run via Docker Compose
-```bash
-docker-compose up --build
-```
-The application will be accessible at `http://localhost:8000` with automated healthchecks.
+*When presenting this project in technical interviews:*
 
-### Deploy to Streamlit Community Cloud
-1. Push this repository to GitHub.
-2. Link your repo on [share.streamlit.io](https://share.streamlit.io/).
-3. Set the main file path to: `streamlit_app.py`.
-4. Configure your API keys in the Streamlit Cloud Secrets Manager.
+1. **Deterministic Scoring vs. LLM Hallucination:**  
+   *"Rather than asking an LLM for an arbitrary score that varies on every request, we decoupled evaluation into a deterministic mathematical engine. The LLM handles nuanced contextual tailoring (STAR bullets, interview strategies), while deterministic regex/AST algorithms compute verified keyword densities and metrics."*
 
----
+2. **Multi-Agent Decomposition with CrewAI:**  
+   *"We avoided monolithic prompts by assigning distinct personas with explicit task boundaries: the Resume Profiler audits existing facts, the Job Specialist extracts hard requirements, the Optimizer handles STAR rewrites, and the Coach focuses on interview prep."*
 
-## 💼 Interview Explanation Guide
+3. **Production Security Guardrails:**  
+   *"Resumes and scraped job URLs represent untrusted external input. We implemented multi-tier defense: binary magic-byte inspection against disguised payloads, Prompt Guard to neutralize prompt injections, and DNS pre-resolution SSRF protection preventing access to cloud metadata endpoints."*
 
-*Key talking points when discussing this project in engineering interviews:*
-
-1. **Why CrewAI over a single LLM prompt?**  
-   *"A single prompt struggles to balance ATS keyword extraction, tone optimization, and interview question formulation simultaneously. By decoupling these tasks into specialized agents with distinct backstories, constraints, and validation boundaries, we achieve superior output quality and zero hallucination."*
-
-2. **How is the ATS score calculated?**  
-   *"The ATS score is deterministic, not an arbitrary LLM hallucination. It uses a mathematical, weighted formula across five critical dimensions: Keyword Coverage (35%), Technical Alignment (25%), Experience Match (20%), Education Alignment (10%), and Formatting Integrity (10%)."*
-
-3. **How is prompt injection prevented?**  
-   *"We treat resumes and job descriptions as untrusted user data. All inputs pass through our `PromptGuard` scanner to detect prompt injection signatures before being isolated within rigid structural XML tags (`<UNTRUSTED_DOCUMENT_DATA>`)."*
-
-4. **How do you handle LLM rate limits on free infrastructure?**  
-   *"We designed a multi-tier fallback architecture. If Google Gemini free tier encounters rate limits (HTTP 429), the gateway fails over to Groq Llama 3.3 70B, then OpenRouter, with deterministic rule-based evaluation as the ultimate safety net."*
-
----
-
-## ⚠️ Limitations & Roadmap
-
-- **OCR for Scanned Resumes:** Currently processes text-based PDFs. Future versions will integrate Tesseract/PaddleOCR for image-only scans.
-- **Live Voice Interview Simulator:** Planned integration with WebRTC and real-time speech-to-text for realistic audio mock interviews.
-- **Direct LinkedIn One-Click Apply:** Integration with applicant webhooks for streamlined job submissions.
+4. **Multi-Tier LLM Resilience:**  
+   *"The platform is designed to operate seamlessly on free-tier infrastructure. If Google Gemini reaches rate limits (HTTP 429), the gateway gracefully falls back to Groq Llama 3.3 70B, with deterministic rule-based evaluation ensuring zero service downtime."*
 
 ---
 
 ## 📄 License
 
-Distributed under the MIT License. See `LICENSE` for details.
+Distributed under the **MIT License**. See `LICENSE` for more information.
+
+---
+
+<p align="center">
+  <b>Built with ❤️ using CrewAI, FastAPI, and Python.</b>
+</p>
